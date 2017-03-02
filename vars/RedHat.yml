@@ -1,0 +1,10 @@
+---
+mariadb_pkgs:
+  - MariaDB-client
+  - MariaDB-server
+mariadb_reqs:
+  - MySQL-python
+
+mariadb_conf_dir: /etc/my.cnf.d
+mariadb_net_config: "{{ mariadb_conf_dir }}/net.cnf"
+mariadb_service_name: mariadb

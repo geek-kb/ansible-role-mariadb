@@ -1,0 +1,23 @@
+---
+- name: "Add apt repo"
+  template:
+    src: mariadb.list.j2
+    dest: /etc/apt/sources.list.d/mariadb.list
+    owner: root
+    group: root
+    mode: 0644
+  register: mariadb_list
+
+- name: "Add apt key"
+  apt_key:
+    data: "{{ lookup('file', 'UBUNTU-GPG-KEY-MariaDB') }}"
+    state: present
+    id: 1BB943DB
+  register: mariadb_key
+
+#id=1BB943DB url=http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xCBCB082A1BB943DB state=present
+- debug: var=mariadb_key
+- name: "Update apt cache"
+  apt:
+    update_cache: yes
+  when: mariadb_list.changed or mariadb_key.changed

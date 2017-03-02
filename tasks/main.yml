@@ -1,0 +1,79 @@
+---
+# tasks file for ansible-role-mariadb
+
+- name: "Include Debain / Redhat OS vars"
+  include_vars: "{{ ansible_os_family }}.yml"
+
+- name: "Setup OS repos"
+  include: "{{ ansible_os_family }}.yml"
+  static: no
+
+- name: "Install MariaDB"
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ mariadb_reqs }}"
+    - "{{ mariadb_pkgs }}"
+
+- name: "Create conf dir before starting mysql"
+  file:
+    state: directory
+    path: "{{ mariadb_conf_dir }}"
+    owner: "{{ mariadb_runas_user }}"
+    group: "{{ mariadb_runas_group }}"
+
+- name: "Append to mariadb_configs var"
+  set_fact:
+    mariadb_configs: "{{ mariadb_configs + artifactory_config }}"
+  when: mariadb_artifactory_optimzed
+
+- name: "Configure MariaDB"
+  template:
+    src: "{{ item }}.j2"
+    dest: "{{ mariadb_conf_dir }}/{{ item }}"
+  notify: service mariadb restart
+  with_items:
+    - "{{ mariadb_configs }}"
+
+- name: "Register & Start MariaDB service"
+  service:
+    name: "{{ mariadb_service_name }}"
+    state: started
+    enabled: yes
+
+- name: "Configure root password"
+  shell: mysqladmin -u root password "{{ mariadb_root_pass }}"
+
+- name: "Configure root"
+  mysql_user:
+    login_user: root
+    login_password: "{{ mariadb_root_pass }}"
+    name: root
+    host: "{{ item }}"
+    password: "{{ mariadb_root_pass }}"
+    state: present
+  with_items:
+    - localhost
+    - 127.0.0.1
+    - ::1
+  when: mariadb_set_root_pass
+
+- name: "Create .my.cnf"
+  template:
+    src: my.cnf.j2
+    dest: /root/.my.cnf
+    owner: root
+    group: root
+    mode: 0400
+
+- name: "Manage databases passed with mariadb_db_properties var"
+  include: "db_manage.yml"
+  when: >
+        not(
+           (mariadb_db_properties is undefined)
+        or
+           (mariadb_db_properties is none)
+        or
+           (mariadb_db_properties|trim == '')
+           )

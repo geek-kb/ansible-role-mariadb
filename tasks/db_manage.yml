@@ -1,0 +1,23 @@
+---
+
+- name: "Create required databases"
+  mysql_db:
+    name: "{{ item.db_name }}"
+    state: "{{ item.db_state }}"
+  with_items:
+  - "{{ mariadb_db_properties }}"
+  loop_control:
+    label: "{{item.db_name}}"
+
+- name: "Create users"
+  mysql_user:
+    name: "{{ item.db_user }}"
+    password: "{{ item.db_pass }}"
+    priv: "{{ item.db_priv }}"
+    host: "{{ item.db_host|default('localhost') }}"
+    state: "{{ item.db_state }}"
+  with_items:
+  - "{{ mariadb_db_properties }}"
+  loop_control:
+    label: "{{item.db_name}}"
+

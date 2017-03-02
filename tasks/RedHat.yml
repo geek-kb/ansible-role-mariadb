@@ -1,0 +1,21 @@
+---
+
+- name: "Add yum repository"
+  template:
+    src: mariadb.repo.j2
+    dest: /etc/yum.repos.d/mariadb.repo
+    owner: root
+    group: root
+    mode: 0644
+  register: mariadb_repo
+
+- name: "Add yum repo key"
+  rpm_key:
+    state: present
+    key: https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+  register: mariadb_key
+
+- name: "Update yum cache"
+  yum:
+    update_cache: true
+  when: mariadb_repo.changed or mariadb_key.changed

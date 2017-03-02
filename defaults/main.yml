@@ -1,0 +1,36 @@
+---
+# defaults file for ansible-role-mariadb
+
+mariadb_version_major: 10
+mariadb_version_minor: 1
+#mariadb_version_patch: 4
+mariadb_version: "{{ mariadb_version_major }}.{{ mariadb_version_minor }}"
+mariadb_bind_address: '127.0.0.1'
+mariadb_root_pass: Changem3
+
+# if false mysql is preapred for development with no password
+mariadb_set_root_pass: true
+
+mariadb_runas_user: mysql
+mariadb_runas_group: mysql
+
+mariadb_db_properties:
+  - db_name: "testDb"
+    db_user: "testDb"
+    db_pass: "testDb"
+    db_priv: 'testDb.*:ALL'
+    db_host: "%"
+    db_state: present
+#  - db_name: "gitlab"
+#    db_user: "gitlab"
+#    db_pass: "gitlab"
+#    db_priv: 'gitlab.*:ALL'
+#    db_host: "%"
+#    db_state: absent
+
+mariadb_configs:
+  - net.cnf # define mysql bind address
+
+mariadb_artifactory_optimzed: false
+artifactory_config:
+  - artifactory_tuning.cnf
