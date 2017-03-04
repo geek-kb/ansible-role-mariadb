@@ -15,7 +15,7 @@
     key: https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
   register: mariadb_key
 
-- name: "Update yum cache"
-  yum:
-    update_cache: true
-  when: mariadb_repo.changed or mariadb_key.changed
+#- name: "Update yum cache"
+#  yum:
+#    update_cache: true
+#  when: mariadb_repo.changed or mariadb_key.changed

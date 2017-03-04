@@ -16,8 +16,8 @@
   register: mariadb_key
 
 #id=1BB943DB url=http://keyserver.ubuntu.com/pks/lookup?op=get&search=0xCBCB082A1BB943DB state=present
-- debug: var=mariadb_key
-- name: "Update apt cache"
-  apt:
-    update_cache: yes
-  when: mariadb_list.changed or mariadb_key.changed
+#- debug: var=mariadb_key
+#- name: "Update apt cache"
+#  apt:
+#    update_cache: yes
+#  when: mariadb_list.changed or mariadb_key.changed

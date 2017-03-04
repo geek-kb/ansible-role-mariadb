@@ -6,7 +6,7 @@ mariadb_version_minor: 1
 #mariadb_version_patch: 4
 mariadb_version: "{{ mariadb_version_major }}.{{ mariadb_version_minor }}"
 mariadb_bind_address: '127.0.0.1'
-mariadb_root_pass: Changem3
+mariadb_root_pass: "{{ db_root_pass| d('Changem3') }}"
 
 # if false mysql is preapred for development with no password
 mariadb_set_root_pass: true

@@ -12,6 +12,8 @@
   package:
     name: "{{ item }}"
     state: present
+  retries: 5
+  delay: 10
   with_items:
     - "{{ mariadb_reqs }}"
     - "{{ mariadb_pkgs }}"
